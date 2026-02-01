@@ -2,22 +2,16 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/bessonovagalina/Saucedemo.git'
-            }
-        }
-
         stage('Install dependencies') {
             steps {
                 bat 'python -m pip install --upgrade pip'
-                bat 'pip install -r requirements.txt'
+                bat 'python -m pip install -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                bat 'pytest --alluredir=allure-results'
+                bat 'python -m pytest -q --alluredir=allure-results'
             }
         }
     }
