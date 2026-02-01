@@ -1,24 +1,34 @@
 pipeline {
     agent any
 
+    environment {
+        PY = "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Install dependencies') {
             steps {
-                bat 'python -m pip install --upgrade pip'
-                bat 'python -m pip install -r requirements.txt'
+                bat "\"%PY%\" -m pip install --upgrade pip"
+                bat "\"%PY%\" -m pip install -r requirements.txt"
             }
         }
 
         stage('Run tests') {
             steps {
-                bat 'python -m pytest -q --alluredir=allure-results'
+                bat "\"%PY%\" -m pytest -q --alluredir=allure-results"
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'allure-results/**', fingerprint: true
+            archiveArtifacts artifacts: 'allure-results/**', fingerprint: true, allowEmptyArchive: true
         }
     }
 }
